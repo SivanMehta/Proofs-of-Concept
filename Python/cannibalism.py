@@ -1,5 +1,5 @@
 ##
-## visualizing the last tournemant bracket from http://what-if.xkcd.com/105/
+## visualizing the last tournament  bracket from http://what-if.xkcd.com/105/
 ##
 
 import math
