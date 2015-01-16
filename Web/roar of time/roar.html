@@ -1,0 +1,51 @@
+<html>
+    <head>
+        <style type="text/css">
+            body
+            {
+                background-image: url(media/dialga.png);
+                background-position: -90% -25%;
+                background-size: 75%;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+            }
+
+            @font-face{
+                font-family: pokemon;
+                src: url(media/Pokemon_GB.ttf);
+            }
+
+            div
+            {
+                margin-top: 15%;
+                font-family: pokemon;
+                width: 50%;
+                margin-left: 50%;
+                line-height: 150%;
+                text-align: center;
+            }
+            span
+            {
+                margin: auto;    
+            }
+        </style>
+        <script type="text/javascript">
+            function loadTime()
+            {
+                document.getElementsByClassName("time")[0].innerHTML = new Date().toLocaleTimeString();
+            }
+
+            function loadPage()
+            {
+                loadTime();
+                window.setInterval(loadTime, 1000);
+                new Audio('media/dialga_cry.ogg').play();
+            }
+        </script>
+    </head>
+    <body onload = "loadPage()">
+        <div>Dialga used Roar of Time!<br /><br /><br /><br /><br />
+            <span class = "time"></span></div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,36 @@
+<!-- 
+    This webpage displays the time and colors the background accordingly
+
+    Ex: 4:30:02 -> background would be #041E02
+    Ex:12:55:17 -> background would be #0C3711
+    Ex: 1:08:14 -> background would be #01080E
+-->
+<html>
+    <head>
+        <script src = "hexclockhelper.js"></script>
+        <script src="http://code.jquery.com/jquery-latest.js"></script>
+        <style type="text/css">
+        #clock
+        {
+            color: white;
+
+            width: 100px;
+            height: 100px;
+
+            position: absolute;
+            top:0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+
+            margin: auto;
+
+            font-family: 'Lato', Helvetica, Arial, sans-serif;
+            font-size: 50px;
+        }
+        </style>
+    </head>
+    <body onload = "start()">
+        <span id = "clock"></span>
+    </body>
+</html>
