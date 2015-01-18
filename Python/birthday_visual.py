@@ -9,7 +9,7 @@ probs = []
 print "people, chance of collision"
 for n in xrange(1, 100):
     p *= chanceOfImpactWithNPeople(n)
-    print "%2d %f" % (n, 1 - p)
+    # print "%2d %f" % (n, 1 - p)
     # people, chance of finding uniques, chance of collision
     probs.append(1 - p)
 
