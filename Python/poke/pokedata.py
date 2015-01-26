@@ -865,5 +865,3 @@ pokeIndeces = dict()
 
 for i in range(len(dex)):
     pokeIndeces[dex[i][0]] = i
-
-# print generateRelationships(normal, fighting)
