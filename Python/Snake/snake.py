@@ -89,6 +89,7 @@ class Snake():
         with open("highscore.txt", mode = "w") as f:
                 f.write("Your current high score is: %d" % highScore)
         with open("highscore.txt", mode = "r") as f:
+            print "Your score was", len(self.snake)
             print f.read()        
 
     def redrawAll(self):
