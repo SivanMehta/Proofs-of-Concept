@@ -89,8 +89,8 @@ class Snake():
                                    "blue")
 
         while any([self.snake[i].collides(self.coin) for i in xrange(len(self.snake))]): # any(x) returns x[0] or x[1] or x[2]....
-            self.coin.x, self.coin.y = random.randint(8, boardSize/ (2 * snakeSize) - (8 * snakeSize)) * 2 * snakeSize,
-                                       random.randint(8, boardSize/ (2 * snakeSize) - (8 * snakeSize)) * 2 * snakeSize
+            self.coin.x = random.randint(8, boardSize/ (2 * snakeSize) - (8 * snakeSize)) * 2 * snakeSize
+            self.coin.y = random.randint(8, boardSize/ (2 * snakeSize) - (8 * snakeSize)) * 2 * snakeSize
             
             # randomly reassign coin if it has been placed inside the snake by accident     
 
