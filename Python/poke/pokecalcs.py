@@ -1,39 +1,40 @@
 import copy
 from pokedata import *
 
-"""
-to determine a "defensive score", we will add up the damage modifiers, or simply use this logic:
-immunity -> +0
-x4 resistance -> .25
-x2 resistance (normal) -> .5
-neutrality --> 1
-x2 weakness -> 2
-x4 weaknesses -> 4
+def lookup(pokemon): return livingDex[pokeIndeces[pokemon]]
 
-for example:
-Blissey (Normal type) has 1 weakness (Fighting), 1 immunity (Ghost), no resistances, and 16 neutralities
-2 + 0 + 16 -> 18
+"""
+    to determine a "defensive score", we will multiply the damage modifiers
+    by the number of neutralities, or simply use this logic:
+
+    x4 resistance -> .25
+    x2 resistance (normal) -> .5
+    neutrality --> 1
+    x2 weakness -> 2
+    x4 weaknesses -> 4
+
+    for example:
+    Blissey (Normal type) has 1 weakness (Fighting), 1 immunity (Ghost), no resistances, and 16 neutralities
+    2 * 1 ^ 16 = 2
 """
 
 def getDefensiveScore(pokemon):
     if(type(pokemon) == str):
-        pokemon = livingDex[pokeIndeces[pokemon]]
-        print(pokemon)
+        pokemon = lookup(pokemon)
 
-    # setting score to the amount of neutralities among the 18 types
-    score = 18 - len(pokemon.resistances) - len(pokemon.weaknesses) - len(pokemon.immunities)
+    score = 18.0 - len(pokemon.immunities) # there are 18 types
 
     for pokeType in pokemon.resistances:
         if(pokeType[-1] == 2): # indication of a double resistance
-            score += .25
+            score *= .25
         else:
-            score += .5
+            score *= .5
     
     for pokeType in pokemon.weaknesses: # indication of a double weakness
         if(pokeType[-1] == 2):
-            score += 4
+            score *= 4
         else:
-            score += 2
+            score *= 2
 
     return score
 
@@ -66,24 +67,25 @@ def findRealWall():
             minScore = score
 
     print minDitto
-    print "Score --> " + str(minScore)
+    print "Score --> ", str(minScore)
 
 """
-to determine an "offensive score", we will simply get the combination that has
-the fewest number of resists
+    to determine an "offensive score", we will simply get the combination that has
+    the fewest number of resists
 """
 
-def getOffensiveScore(test_pokemon):
-    if(type(test_pokemon) == str):
-        test_pokemon = livingDex[pokeIndeces[test_pokemon]]
-        print(test_pokemon)
-    elif(type(test_pokemon) == Pokemon):
-        print test_pokemon
+# returns the score with 
+def resistsSTAB(attacker, defender):
+    return defender.resists(attacker.type1) and defender.resists(attacker.type2)
 
-    score = 718
+def getOffensiveScore(attacker):
+    if(type(attacker) == str):
+        attacker = lookup(attacker)
 
-    for pokemon in livingDex:
-        if (pokemon.resists(test_pokemon.type1) or str(test_pokemon.type1).capitalize() in pokemon.immunities) and ((pokemon.resists(test_pokemon.type2) or str(test_pokemon.type2).capitalize() in pokemon.immunities)):
+    score = len(livingDex)
+
+    for defender in livingDex:
+        if(resistsSTAB(attacker, defender)):
             score -= 1
 
     return score
@@ -91,19 +93,19 @@ def getOffensiveScore(test_pokemon):
 #determining the best possible STAB combo
 def findTheoreticalSTAB():
     maxScore = 0 # if every poke resisted (impossible)
-    megaDitto = None
+    ditto = None
 
     for pokeType1 in pokeTypes:
-            for pokeType2 in pokeTypes:
-                megaDitto = Pokemon("pokeKiller", pokeType1, pokeType2)
-                score = getOffensiveScore(megaDitto)
+        for pokeType2 in pokeTypes:
+            minDitto = Pokemon("pokeKiller", pokeType1, pokeType2)
+            score = getOffensiveScore(minDitto)
 
-                if(score > maxScore):
-                    minDitto = megaDitto
-                    maxScore = score
+            if(score > maxScore):
+                ditto = minDitto
+                maxScore = score
 
-    print minDitto
-    print"Pokemon that don't resist: ", maxScore
+    print ditto
+    print "Non-Resistors: ", maxScore
 
 def findRealSTAB():
     maxScore = 0
@@ -117,40 +119,73 @@ def findRealSTAB():
             maxScore = score
 
     print maxDitto 
-    print "Score --> " + str(maxScore) + "\n"
+    print "Pokemon that don't resist: ", maxScore
 
-print "\n#########################################"
-print "## Getting example defensive scores... ##"
-print "#########################################"
-print getDefensiveScore("Jigglypuff")
-print getDefensiveScore("Abomasnow")
-print getDefensiveScore("Steelix")
+def test():
+    print """
+                                        .::.
+                                  .;:**'
+                                  `                   
+      .:XHHHHk.              db.   .;;.     dH  MX    
+    oMMMMMMMMMMM       ~MM  dMMP :MMMMMR   MMM  MR      ~MRMN
+    QMMMMMb  "MMX       MMMMMMP !MX' :M~   MMM MMM  .oo. XMMM 'MMM
+      `MMMM.  )M> :X!Hk. MMMM   XMM.o"  .  MMMMMMM X?XMMM MMM>!MMP
+       'MMMb.dM! XM M'?M MMMMMX.`MMMMMMMM~ MM MMM XM `" MX MMXXMM
+        ~MMMMM~ XMM. .XM XM`"MMMb.~*?**~ .MMX M t MMbooMM XMMMMMP
+         ?MMM>  YMMMMMM! MM   `?MMRb.    ````   !L"MMMMM XM IMMM
+          MMMX   "MMMM"  MM       ~%%:           !Mh.``` dMI IMMP
+          'MMM.                                             IMX
+           ~M!M                                             IMP"
+    """
 
+    print "\n#########################################"
+    print "## Getting example defensive scores... ##"
+    print "#########################################"
+    print lookup("Jigglypuff"), "\nScore --> ", getDefensiveScore("Jigglypuff")
+    print lookup("Abomasnow"), "\nScore --> ", getDefensiveScore("Abomasnow")
+    print lookup("Aegislash"), "\nScore --> ", getDefensiveScore("Aegislash")
 
-print "\n#########################################"
-print "## Getting example offensive scores... ##"
-print "#########################################"
-print getOffensiveScore("Houndoom")
-print getOffensiveScore("Xerneas")
-print getOffensiveScore("Rhyperior")
-print getOffensiveScore("Garchomp")
+    print "\n######################################################"
+    print "## Finding best theoretical defensive type combo... ##"
+    print "######################################################"
+    findTheoreticalWall()
 
-print "\n######################################################"
-print "## Finding best theoretical defensive type combo... ##"
-print "######################################################"
-findTheoreticalWall()
+    print "###################################################"
+    print "## Finding best existing defensive type combo... ##"
+    print "###################################################"
+    findRealWall()
 
-print "###################################################"
-print "## Finding best existing defensive type combo... ##"
-print "###################################################"
-findRealWall()
+    print "\n#########################################"
+    print "## Getting example offensive scores... ##"
+    print "#########################################"
+    print lookup("Houndoom"), "\nNon-Resistors: ", getOffensiveScore("Houndoom"), "/", len(livingDex)
+    print lookup("Xerneas"), "\nNon-Resistors: ", getOffensiveScore("Xerneas"), "/", len(livingDex)
+    print lookup("Garchomp"), "\nNon-Resistors: ", getOffensiveScore("Garchomp"), "/", len(livingDex)
 
-print "\n######################################################"
-print "## Finding best theoretical offensive type combo... ##"
-print "######################################################"
-findTheoreticalSTAB()
+    print "\n######################################################"
+    print "## Finding best theoretical offensive type combo... ##"
+    print "######################################################"
+    findTheoreticalSTAB()
 
-print "\n###################################################"
-print "## Finding best existing offensive type combo... ##"
-print "###################################################"
-findRealSTAB()
+    print "\n###################################################"
+    print "## Finding best existing offensive type combo... ##"
+    print "###################################################"
+    findRealSTAB()
+
+    print "\n#######################################"
+    print "## Calculating the 'Average Pokemon' ##"
+    print "#######################################"
+
+    scores = []
+    for pokemon in livingDex:
+        scores.append(getDefensiveScore(pokemon))
+    defensiveScore = sum(scores) / len(scores)
+
+    for pokemon in livingDex:
+        scores.append(getOffensiveScore(pokemon))
+    offensiveScore = sum(scores) / len(scores)
+
+    print "Average Defensive Score -> ", defensiveScore
+    print "Average Offensive Score -> ", offensiveScore
+
+test()

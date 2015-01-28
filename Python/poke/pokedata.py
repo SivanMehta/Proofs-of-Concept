@@ -715,7 +715,10 @@ Noibat Flying Dragon
 Noivern Flying Dragon
 Xerneas Fairy
 Yveltal Dark Flying
-Zygarde Dragon Ground""".split("\n")
+Zygarde Dragon Ground
+Diancie Rock Fairy
+Hoopa Psychic Ghost
+Volcanion Fire Water""".split("\n")
 
 dex = []
 
@@ -767,8 +770,6 @@ def generateRelationships(type1, type2):
     if(type2 == type1):
         return [resistances, weaknesses, immunities]
 
-    # print type1.resistances
-    # print type2.resistances
 
     # then relate to 2
     for immunity in type2.immunities:
@@ -841,11 +842,9 @@ class Pokemon():
         return "I am %s and I am %s%s type!\n%s" % (self.name, self.type1, extra, relationships)
 
     def resists(self, p):
-        # pokeType is passed as an object, but must be interpreted as a string
-
         pType = str(p).capitalize()
 
-        return (pType in self.resistances or (pType == " x 2") in self.resistances)
+        return (pType in self.resistances or (pType + " x 2") in self.resistances) or (pType in self.immunities or (pType == " x 2") in self.immunities)
         
 
 livingDex = []
