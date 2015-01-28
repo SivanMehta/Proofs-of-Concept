@@ -82,7 +82,6 @@ class Snake():
         self.coin.color = "#0666D0"
         self.snake += [self.coin]
 
-        print boardSize/ (2 * snakeSize)
         self.coin = PhysicalObject(random.randint(8, boardSize/ (2 * snakeSize) - (8 * snakeSize)) * 2 * snakeSize,
                                    random.randint(8, boardSize/ (2 * snakeSize) - (8 * snakeSize)) * 2 * snakeSize, 
                                    snakeSize, 
