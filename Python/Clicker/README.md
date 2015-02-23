@@ -17,4 +17,4 @@ Directions
 
 
 
-_Psssssst,_ try entering in the Konami Code
+###### _psssssst,_ try entering in the Konami Code
