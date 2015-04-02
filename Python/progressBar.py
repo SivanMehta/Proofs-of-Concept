@@ -10,7 +10,7 @@ def genericOutput(iterations, iter_time):
         time.sleep(iter_time)
         sys.stdout.flush()
         sys.stdout.write("\rYou have completed %d/%d iterations " % (i+1, iterations))
-    print "\033[0;32m done!\033[0m"
+    print "\033[0;32m DONE\033[0m"
 
 def hashBar(iterations, iter_time):
     columns = int(os.popen('stty size', 'r').read().split()[1])

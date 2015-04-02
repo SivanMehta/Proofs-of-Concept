@@ -187,5 +187,3 @@ def test():
 
     print "Average Defensive Score -> ", defensiveScore
     print "Average Offensive Score -> ", offensiveScore
-
-test()

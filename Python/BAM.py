@@ -6,7 +6,7 @@ from Tkinter import *
 root = Tk()
 canvas = Canvas(root, width = 400, height = 400)
 canvas.pack()
-words = raw_input("What's your message? ").upper()
+words = "Fuck you "
 
 if(len(words) <= 6):
     fontSize = 100
@@ -45,7 +45,7 @@ def do():
     canvas.create_rectangle(0, 0, 400, 400, fill = color, outline = color)
     canvas.create_text(200, 200, text = words, font = "Futura %d" % fontSize, fill = textColor)
     
-    canvas.after(10, do)
+    canvas.after(1, do)
 
 
 do()
