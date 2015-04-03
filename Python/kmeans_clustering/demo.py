@@ -24,16 +24,14 @@ class Body():
 class Clustering():
     def __init__(self, clusters):
         root = Tkinter.Tk()
-        root.bind("<Key>", self.step)
-        root.bind("<Button-1>, self.step")
         self.canvas = Tkinter.Canvas(root, height = 750, width = 750)
         self.canvas.pack()
 
         self.bodies = [Body("grey") for i in xrange(10000)]
         self.pivots = [Body(generateRandomColor()) for i in xrange(clusters)]
-
         self.done = False
 
+        self.timer()
         self.redrawAll()
         root.mainloop()
 
@@ -49,8 +47,12 @@ class Clustering():
 
         self.canvas.update()
 
-    def step(self, event):
-        if(self.done): return
+    def timer(self):
+        if self.step():
+            self.canvas.after(100, self.timer)
+
+    def step(self):
+        if(self.done): return False
 
         # now move pivots to the centroid of it's cluster for the next step
         # if there is no change, than the clustering is done, otherwise, redraw everything
@@ -87,6 +89,8 @@ class Clustering():
             self.done = True
 
         self.redrawAll()
+
+        return True
 
 try:
     Clustering(int(sys.argv[1]))
