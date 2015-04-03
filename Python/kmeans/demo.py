@@ -25,6 +25,7 @@ class Clustering():
     def __init__(self, clusters):
         root = Tkinter.Tk()
         root.bind("<Key>", self.step)
+        root.bind("<Button-1>, self.step")
         self.canvas = Tkinter.Canvas(root, height = 750, width = 750)
         self.canvas.pack()
 
@@ -43,7 +44,7 @@ class Clustering():
         for body in self.bodies:
             body.draw(self.canvas)
         for pivot in self.pivots:
-            self.canvas.create_text(pivot.x, pivot.y, text = "P", fill = pivot.color)
+            self.canvas.create_text(pivot.x, pivot.y, text = "P")
 
         self.canvas.update()
 
@@ -53,7 +54,7 @@ class Clustering():
             print "Bodies already clustered"
             return
 
-        print "clustering bodies, will assign by color"
+        print "clustering bodies, will assign by one of %d colors" % len(self.pivots)
         # for each body, assign it to a pivot
         assignments = []
         for body in xrange(len(self.bodies)):
@@ -73,4 +74,7 @@ class Clustering():
 
         self.redrawAll()
 
-Clustering(10)
+if(len(sys.argv) == 2 and int(sys.argv[1]) > 1):
+    Clustering(int(sys.argv[1]))
+else:
+    Clustering(10)
