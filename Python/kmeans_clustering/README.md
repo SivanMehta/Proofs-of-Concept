@@ -4,7 +4,7 @@ This is an exploration of [this](http://en.wikipedia.org/wiki/K-means_clustering
 * incorporate other distributions
 * be able to take in arbitrary data and visualize the clustering
 
-right now you can run the automated simulation very simply like this
+Right now you can run the automated simulation very simply like this:
 ```bash
 python demo.py
 ```
