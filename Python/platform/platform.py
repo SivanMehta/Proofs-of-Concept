@@ -30,20 +30,39 @@ class Animation():
         self.canvas = Canvas(root, width = 600, height = 600)
         self.canvas.pack()
         
-        player = Rectangle(500, 200, 520, 220, "black")
+        player = Rectangle(80, 80, 100, 100, "black")
+        ground = Rectangle(0, 600, 600, 601, "black") # the invisible ground at the bottom of the screen
 
-        ground = Rectangle(0, 400, 600, 600, "blue")
+        platform1 = Rectangle(0,  400,50,  410, generateRandomColor())
+        platform2 = Rectangle(50, 400,100, 410, generateRandomColor())
+        platform3 = Rectangle(100,400,150, 410, generateRandomColor())
+        platform4 = Rectangle(150,400,200, 410, generateRandomColor())
+        platform5 = Rectangle(200,400,250, 410, generateRandomColor())
 
-        platform1 = Rectangle(400, 300, 600, 310, "brown")
-        platform2 = Rectangle(200,200,300, 210, "brown")
+
+        platform1a = Rectangle(350, 440,400, 450, generateRandomColor())
+        platform2a = Rectangle(400, 440,450, 450, generateRandomColor())
+        platform3a = Rectangle(450, 440,500, 450, generateRandomColor())
+        platform4a = Rectangle(500, 440,550, 450, generateRandomColor())
+        platform5a = Rectangle(550, 440,600, 450, generateRandomColor())
         
         self.player = player.draw(self.canvas)
 
-        self.platforms = [
-        (ground.draw(self.canvas), ground),
-        (platform1.draw(self.canvas), platform1),
-        (platform2.draw(self.canvas), platform2)
-            ]
+        self.platforms = {
+                            ground.draw(self.canvas)    : ground,
+
+                            platform1.draw(self.canvas) : platform1,
+                            platform2.draw(self.canvas) : platform2,
+                            platform3.draw(self.canvas) : platform3,
+                            platform4.draw(self.canvas) : platform4,
+                            platform5.draw(self.canvas) : platform5,
+
+                            platform1a.draw(self.canvas) : platform1a,
+                            platform2a.draw(self.canvas) : platform2a,
+                            platform3a.draw(self.canvas) : platform3a,
+                            platform4a.draw(self.canvas) : platform4a,
+                            platform5a.draw(self.canvas) : platform5a
+                            }
 
         self.dy = 0
         self.dx = 0
@@ -64,9 +83,17 @@ class Animation():
         self.canvas.after(10, self.timer)
 
     def hittingPlatform(self):
-        for platform_id, platform in self.platforms:
+        for platform_id in self.platforms.keys():
+            platform = self.platforms[platform_id]
             if(self.player in self.canvas.find_overlapping(platform.x1, platform.y1, platform.x2, platform.y2)):
                 return platform_id
+
+    def sitting(self):
+        self.canvas.move(self.player, 0, 1)
+        sitting = self.hittingPlatform()
+        self.canvas.move(self.player, 0, -1)
+
+        return sitting
 
     def animate(self):
         # pseudo friction for both the air and the ground
@@ -81,6 +108,12 @@ class Animation():
             self.canvas.move(self.player, 0, -1)
             self.dy = 0  
         self.dy += 1
+
+        if(self.sitting()):
+            platform = self.sitting()
+            self.canvas.itemconfig(self.player, fill = self.platforms[platform].color, outline = self.platforms[platform].color)
+        else:
+            self.canvas.itemconfig(self. player, fill = "black", outline = "white")
 
         self.canvas.update()
 
