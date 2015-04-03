@@ -11,8 +11,8 @@ def generateRandomColor():
 
 class Body():
     def __init__(self, color):
-        self.x = random.randint(10, 490)
-        self.y = random.randint(10, 490)
+        self.x = random.randint(25, 725)
+        self.y = random.randint(25, 725)
         self.color = color
 
     def draw(self, canvas):
@@ -25,24 +25,25 @@ class Clustering():
     def __init__(self, clusters):
         root = Tkinter.Tk()
         root.bind("<Key>", self.step)
-        self.canvas = Tkinter.Canvas(root, height = 500, width = 500)
+        self.canvas = Tkinter.Canvas(root, height = 750, width = 750)
         self.canvas.pack()
 
-        self.bodies = [Body("grey") for i in xrange(100)]
+        self.bodies = [Body("grey") for i in xrange(10000)]
 
-        self.pivots = [(Body("red"), generateRandomColor()) for i in xrange(clusters)]
+        self.pivots = [Body(generateRandomColor()) for i in xrange(clusters)]
 
-        self.draw()
+        self.redrawAll()
         root.mainloop()
 
     def distance(self, body1, body2):
         return ((body1.x - body2.x) ** 2 + (body1.y - body2.y)**2) ** .5
 
-    def draw(self):
-        self.canvas.delete(ALL)
-        for body in self.bodies: body.draw(self.canvas)
+    def redrawAll(self):
+        self.canvas.delete()
+        for body in self.bodies:
+            body.draw(self.canvas)
         for pivot in self.pivots:
-            self.canvas.create_text(pivot[0].x, pivot[0].y, text = "P")
+            self.canvas.create_text(pivot.x, pivot.y, text = "P", fill = pivot.color)
 
     def step(self, event):
         # do nothing if bodies have already been clustered
@@ -55,24 +56,19 @@ class Clustering():
         assignments = []
         for body in xrange(len(self.bodies)):
             maxPivot = None
-            minDistance = 500 * (2**.5) # max possible distance on the canvas
+            minDistance = 750 * (2**.5) # max possible distance on the canvas
             for pivot in xrange(len(self.pivots)):
-                distance = self.distance(self.pivots[pivot][0], self.bodies[body])
+                distance = self.distance(self.pivots[pivot], self.bodies[body])
                 if(distance < minDistance):
                     maxPivot = pivot
                     minDistance = distance
 
             assignments.append((body, maxPivot))
 
-            sys.stdout.flush()
-            sys.stdout.write("\rassigned body %d/100... " % (body + 1))
-
-        print "\033[0;32m DONE\033[0m"
-
         for pair in assignments:
             body, pivot = pair
-            self.bodies[body].color = self.pivots[pivot][1]
+            self.bodies[body].color = self.pivots[pivot].color
 
-        self.draw()
+        self.redrawAll()
 
 Clustering(10)
