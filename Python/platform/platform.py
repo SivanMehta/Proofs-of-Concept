@@ -31,7 +31,7 @@ class Animation():
         self.canvas.pack()
         
         player = Rectangle(80, 80, 100, 100, "black")
-        ground = Rectangle(0, 600, 600, 601, "black") # the invisible ground at the bottom of the screen
+        ground = Rectangle(-10, 600, 610, 601, "black") # the invisible ground at the bottom of the screen
 
         platform1 = Rectangle(0,  400,50,  410, generateRandomColor())
         platform2 = Rectangle(50, 400,100, 410, generateRandomColor())
@@ -95,19 +95,24 @@ class Animation():
 
         return sitting
 
+    def offScreen(self):
+        return self.player not in self.canvas.find_overlapping(10,10,600,600)
+
     def animate(self):
         # pseudo friction for both the air and the ground
         if(abs(self.dx) > .0001):
-            self.dx *= .9
+            self.dx *= .95
         else:
             self.dx = 0
 
         self.canvas.move(self.player, self.dx, self.dy)
-        # if you are going to the hit the box, go to the top of the box
+        # if you are going to the hit a box, go to the top of the box
         while(self.hittingPlatform()):
             self.canvas.move(self.player, 0, -1)
-            self.dy = 0  
-        self.dy += 1
+            self.dy = 0
+        while(self.offScreen()):
+            self.canvas.move(self.player, -(self.dx/abs(self.dx)), 0)
+        self.dy += 1 # acceleration due to gravity
 
         if(self.sitting()):
             platform = self.sitting()
