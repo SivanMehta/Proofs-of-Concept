@@ -1,111 +1,90 @@
 from Tkinter import *
+import random
 
-class Box():
-    def __init__(self, x1 = 0, y1 = 0, x2 = 10, y2 = 10):
-        self.x1 = x1
-        self.y1 = y1
-        self.x2 = x2
-        self.y2 = y2
-        self.height = self.y2 - self.y1
-        self.width = self.x2 - self.x1
+def generateRandomColor():
+    color = "#"
+    for x in xrange(3):
+        adding = hex( int(random.random() * 255) )[2:] #random number from 0 to 255 convert to hex
+        if(len(adding) == 1):
+            adding += "0"
+        color += adding
+    return color
 
-        self.vx = 0
-        self.vy = 0
+class Square():
+    def __init__(self, x, y, diameter, color):
+        self.x = x
+        self.y = y
+        self.radius = diameter / 2
+        self.color = color
+        self.dx = 0
+        self.dy = 0
 
-    def move(self, keysym):
-        if(keysym == "Right"):
-            self.vx += 20
-        if(keysym == "Left"):
-            self.vx -= 20
-        if(keysym == "Up"):
-            self.vy -= 100
+    def draw(self, canvas):
+        return canvas.create_rectangle(self.x - self.radius, self.y - self.radius, self.x + self.radius, self.y + self.radius,
+            fill = self.color, outline = self.color)
 
-    def animate(self):
-        self.x1 += self.vx
-        self.x2 += self.vx
-
-        self.y1 += self.vy
-        self.y2 += self.vy
-
-        # pseudo-friction
-        self.vx *= .9
-
-        if(abs(self.vx) <= .001): self.vx = 0
-
-        #pseudo-gravity
-        self.vy += 10
-
-        if(self.y1 < 0):
-            self.y1 = 0
-            self.y2 = self.height
-            self.vy = 0
-        if(self.x1 < 0):
-            self.x1 = 0
-            self.x2 = self.width
-            self.vx = 0
-        if(self.x2 > 500):
-            self.x2 = 500
-            self.x1 = 500 - self.width
-            self.vx = 0
-        if(self.y2 > 500):
-            self.y2 = 500
-            self.y1 = 500 - self.height
-            self.vy = 0
-        
-
-    def collides(self, B):
-        A = self
-        return (A.x1 <= B.x2) and (A.x2 >= B.x1) and (A.y1 <= B.y2) and (A.y2 >= B.y1)   
-
-class PlatformAnimation():
+class Animation():
     def __init__(self):
-        self.environment = []
-
-        self.environment.append(Box(100, 400, 200, 450))
-        self.environment.append(Box(200, 350, 300, 400))
-        self.environment.append(Box(300, 300, 400, 350))
-
-        self.player = Box(0, 0, 50, 50)
-
-        self.root = Tk()
-        self.canvas = Canvas(self.root, height = 500, width = 500)
+        root = Tk()
+        root.bind("<Key>", self.eventOccurs)
+        self.canvas = Canvas(root, width = 600, height = 600)
         self.canvas.pack()
-
-        self.root.bind("<Key>", self.keyPressed)
-
-        self.timer()
-        self.root.mainloop()
-
-    def draw(self):
-        self.canvas.delete(ALL)
         
-        collides = False
-        for platform in self.environment:
-            if platform.collides(self.player):
-                color = "red"
-                collides = True
-            else:
-                color = "blue"
-            self.canvas.create_rectangle(platform.x1, platform.y1, platform.x2, platform.y2, fill = color, outline = color)
+        box = Square(400, 390, 20, "black")
+        ground = Square(300, 700, 600, "red")
+        
+        self.player = box.draw(self.canvas)
 
-        if(collides):
-            color = "red"
-        else:
-            color = "blue"
-        self.canvas.create_rectangle(self.player.x1, self.player.y1, self.player.x2, self.player.y2, fill = color, outline = color)
+        self.ground = ground.draw(self.canvas)
 
-    def keyPressed(self, event):
-        self.player.move(event.keysym)
-        self.draw()
+        self.dy = 0
+        self.dx = 0
+        self.text = self.canvas.create_text(100, 50, text = "")
+
+        self.canvas.update()
+        self.timer()
+        mainloop()
+
+    def eventOccurs(self, event):
+        if (event.keysym in ["space", "Up"]):
+            self.jump()
+        if (event.keysym in ["Right", "Left"]):
+            self.move(event.keysym[0])
 
     def timer(self):
-        self.player.animate()
+        self.animate()
+        self.canvas.after(10, self.timer)
 
-        for platform in self.environment:
-            if (platform.collides(self.player) and self.player.x2 >= platform.x1 and self.player.y2 >= platform.y1): # if square B is on top of square A, stop vertical motion
-                self.player.vy = 0
+    def animate(self):
+        # self.canvas.itemconfig(self.text, text = "dx:%f dy:%f" % (self.dx, self.dy))
 
-        self.draw()
-        self.canvas.after(50, self.timer)
+        # pseudo friction
+        if(abs(self.dx) > .0001):
+            self.dx *= .9
+        else:
+            self.dx = 0
 
-PlatformAnimation()
+        
+        self.canvas.move(self.player, self.dx, self.dy)
+
+        # if you are going to the hit the box, go to the top of the box
+        while(self.player in self.canvas.find_overlapping(0, 400, 600, 600)):
+            self.canvas.move(self.player, 0, -1)
+            self.dy = 0
+        
+        self.dy += 1
+
+        self.canvas.update()
+
+    def jump(self):
+        self.dy = -20
+
+    def move(self, direction):
+        if direction == "R":
+            self.dx += 5
+        else:
+            self.dx -= 5
+
+
+
+Animation()
