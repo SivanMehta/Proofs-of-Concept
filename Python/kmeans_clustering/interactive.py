@@ -70,7 +70,7 @@ class Clustering():
 
         bodies = [Body("grey") for i in xrange(10000)]
 
-        print "clustering bodies, will assign by one of %d colors" % len(self.pivots)
+        print "grouping bodies, will assign by one of %d colors" % len(self.pivots)
         # for each body, assign it to a pivot
         assignments = []
         for body in xrange(len(bodies)):
@@ -90,7 +90,7 @@ class Clustering():
 
         self.rendered = True
         
-        self.canvas.delete("ALL")
+        self.canvas.delete("all")
         self.drawPivots()
         for body in bodies:
             body.draw(self.canvas)
