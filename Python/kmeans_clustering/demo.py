@@ -1,4 +1,4 @@
-import random, math, sys, Tkinter
+import random, math, sys, Tkinter, time
 
 def generateRandomColor():
     color = "#"
@@ -30,6 +30,7 @@ class Clustering():
         self.bodies = [Body("grey") for i in xrange(10000)]
         self.pivots = [Body(generateRandomColor()) for i in xrange(clusters)]
         self.done = False
+        self.start = time.time()
 
         self.timer()
         self.redrawAll()
@@ -43,6 +44,7 @@ class Clustering():
         for body in self.bodies:
             body.draw(self.canvas)
         for pivot in self.pivots:
+            self.canvas.create_oval(pivot.x-7, pivot.y-7, pivot.x+7, pivot.y+7, fill = "white")
             self.canvas.create_text(pivot.x, pivot.y, text = "P")
 
         self.canvas.update()
@@ -85,7 +87,7 @@ class Clustering():
                 self.pivots[change[3]].y = change[1]/change[2]
 
         if oldPositions == [(pivot.x, pivot.y) for pivot in self.pivots]:
-            print "Finished Clustering"
+            print "Finished Clustering after %.2f seconds" % (time.time() - self.start)
             self.done = True
 
         self.redrawAll()
