@@ -43,7 +43,7 @@ class Animation():
         (ground.draw(self.canvas), ground),
         (platform1.draw(self.canvas), platform1),
         (platform2.draw(self.canvas), platform2)
-        ]
+            ]
 
         self.dy = 0
         self.dx = 0
@@ -66,10 +66,10 @@ class Animation():
     def hittingPlatform(self):
         for platform_id, platform in self.platforms:
             if(self.player in self.canvas.find_overlapping(platform.x1, platform.y1, platform.x2, platform.y2)):
-                return True
+                return platform_id
 
     def animate(self):
-        # pseudo friction
+        # pseudo friction for both the air and the ground
         if(abs(self.dx) > .0001):
             self.dx *= .9
         else:
