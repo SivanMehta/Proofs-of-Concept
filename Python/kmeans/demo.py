@@ -45,6 +45,8 @@ class Clustering():
         for pivot in self.pivots:
             self.canvas.create_text(pivot.x, pivot.y, text = "P", fill = pivot.color)
 
+        self.canvas.update()
+
     def step(self, event):
         # do nothing if bodies have already been clustered
         if (self.bodies[0].color != "grey"):
