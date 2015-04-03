@@ -10,18 +10,18 @@ def generateRandomColor():
         color += adding
     return color
 
-class Square():
-    def __init__(self, x, y, diameter, color):
-        self.x = x
-        self.y = y
-        self.radius = diameter / 2
+class Rectangle():
+    def __init__(self, x1, y1, x2, y2, color):
+        self.x1 = x1
+        self.y1 = y1
+        self.x2 = x2
+        self.y2 = y2
         self.color = color
         self.dx = 0
         self.dy = 0
 
     def draw(self, canvas):
-        return canvas.create_rectangle(self.x - self.radius, self.y - self.radius, self.x + self.radius, self.y + self.radius,
-            fill = self.color, outline = self.color)
+        return canvas.create_rectangle(self.x1, self.y1, self.x2, self.y2, fill = self.color, outline = self.color)
 
 class Animation():
     def __init__(self):
@@ -30,12 +30,20 @@ class Animation():
         self.canvas = Canvas(root, width = 600, height = 600)
         self.canvas.pack()
         
-        box = Square(400, 390, 20, "black")
-        ground = Square(300, 700, 600, "red")
-        
-        self.player = box.draw(self.canvas)
+        player = Rectangle(500, 200, 520, 220, "black")
 
-        self.ground = ground.draw(self.canvas)
+        ground = Rectangle(0, 400, 600, 600, "blue")
+
+        platform1 = Rectangle(400, 300, 600, 310, "brown")
+        platform2 = Rectangle(200,200,300, 210, "brown")
+        
+        self.player = player.draw(self.canvas)
+
+        self.platforms = [
+        (ground.draw(self.canvas), ground),
+        (platform1.draw(self.canvas), platform1),
+        (platform2.draw(self.canvas), platform2)
+        ]
 
         self.dy = 0
         self.dx = 0
@@ -55,29 +63,29 @@ class Animation():
         self.animate()
         self.canvas.after(10, self.timer)
 
-    def animate(self):
-        # self.canvas.itemconfig(self.text, text = "dx:%f dy:%f" % (self.dx, self.dy))
+    def hittingPlatform(self):
+        for platform_id, platform in self.platforms:
+            if(self.player in self.canvas.find_overlapping(platform.x1, platform.y1, platform.x2, platform.y2)):
+                return True
 
+    def animate(self):
         # pseudo friction
         if(abs(self.dx) > .0001):
             self.dx *= .9
         else:
             self.dx = 0
 
-        
         self.canvas.move(self.player, self.dx, self.dy)
-
         # if you are going to the hit the box, go to the top of the box
-        while(self.player in self.canvas.find_overlapping(0, 400, 600, 600)):
+        while(self.hittingPlatform()):
             self.canvas.move(self.player, 0, -1)
-            self.dy = 0
-        
+            self.dy = 0  
         self.dy += 1
 
         self.canvas.update()
 
     def jump(self):
-        self.dy = -20
+        self.dy = -15
 
     def move(self, direction):
         if direction == "R":
