@@ -78,3 +78,4 @@ if(len(sys.argv) == 2 and int(sys.argv[1]) > 1):
     Clustering(int(sys.argv[1]))
 else:
     Clustering(10)
+    
