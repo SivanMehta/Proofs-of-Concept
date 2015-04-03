@@ -11,8 +11,8 @@ def generateRandomColor():
 
 class Body():
     def __init__(self, color):
-        self.x = random.randint(25, 725)
-        self.y = random.randint(25, 725)
+        self.x = random.randint(0, 750)
+        self.y = random.randint(0, 750)
         self.color = color
 
     def draw(self, canvas):
