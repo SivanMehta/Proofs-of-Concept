@@ -51,7 +51,7 @@ class Clustering():
 
     def timer(self):
         if self.step():
-            self.canvas.after(100, self.timer)
+            self.canvas.after(1, self.timer)
 
     def step(self):
         if(self.done): return False
