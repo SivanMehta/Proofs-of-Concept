@@ -1,4 +1,5 @@
 import math, random
+import matplotlib.pyplot as plt
 
 def generateRandomColor():
     color = "#"
@@ -10,7 +11,4 @@ def generateRandomColor():
     return color
 
 def uniform(*bounds):
-    try:
-        return random.randint(bounds[0], bounds[1])
-    except:
-        raise ValueError("Incorrect bounds on Uniform Distribution")
+    return random.randint(bounds[0], bounds[1])
