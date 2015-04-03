@@ -30,8 +30,9 @@ class Clustering():
         self.canvas.pack()
 
         self.bodies = [Body("grey") for i in xrange(10000)]
-
         self.pivots = [Body(generateRandomColor()) for i in xrange(clusters)]
+
+        self.done = False
 
         self.redrawAll()
         root.mainloop()
@@ -40,7 +41,7 @@ class Clustering():
         return ((body1.x - body2.x) ** 2 + (body1.y - body2.y)**2) ** .5
 
     def redrawAll(self):
-        self.canvas.delete()
+        self.canvas.delete("all")
         for body in self.bodies:
             body.draw(self.canvas)
         for pivot in self.pivots:
@@ -49,12 +50,13 @@ class Clustering():
         self.canvas.update()
 
     def step(self, event):
-        # do nothing if bodies have already been clustered
-        if (self.bodies[0].color != "grey"):
-            print "Bodies already clustered"
-            return
+        if(self.done): return
 
-        print "clustering bodies, will assign by one of %d colors" % len(self.pivots)
+        # now move pivots to the centroid of it's cluster for the next step
+        # if there is no change, than the clustering is done, otherwise, redraw everything
+        oldPositions = [(pivot.x, pivot.y) for pivot in self.pivots]
+        # dx, dy, assigned, pivot_id
+        changes = [[0, 0, 0, pivot_id] for pivot_id in xrange(len(self.pivots))]
         # for each body, assign it to a pivot
         assignments = []
         for body in xrange(len(self.bodies)):
@@ -66,16 +68,28 @@ class Clustering():
                     maxPivot = pivot
                     minDistance = distance
 
-            assignments.append((body, maxPivot))
+            self.bodies[body].color = self.pivots[maxPivot].color
+            changes[maxPivot][0] += self.bodies[body].x
+            changes[maxPivot][1] += self.bodies[body].y
+            changes[maxPivot][2] += 1
 
-        for pair in assignments:
-            body, pivot = pair
-            self.bodies[body].color = self.pivots[pivot].color
+        # for pivot in xrange(len(self.pivots)):
+        #     print self.pivots[pivot], changes[pivot]
+
+        # move each pivot
+        for change in changes:
+            if change[2] != 0:
+                self.pivots[change[3]].x = change[0]/change[2]
+                self.pivots[change[3]].y = change[1]/change[2]
+
+        if oldPositions == [(pivot.x, pivot.y) for pivot in self.pivots]:
+            print "Finished Clustering"
+            self.done = True
 
         self.redrawAll()
 
-if(len(sys.argv) == 2 and int(sys.argv[1]) > 1):
+try:
     Clustering(int(sys.argv[1]))
-else:
+except:
     Clustering(10)
     
