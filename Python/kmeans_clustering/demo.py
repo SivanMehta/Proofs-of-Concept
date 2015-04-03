@@ -1,18 +1,9 @@
-import random, math, sys, Tkinter, time
-
-def generateRandomColor():
-    color = "#"
-    for x in xrange(3):
-        adding = hex( int(random.random() * 255) )[2:] #random number from 0 to 255 convert to hex
-        if(len(adding) == 1):
-            adding += "0"
-        color += adding
-    return color
+import random, math, sys, Tkinter, time, helper
 
 class Body():
     def __init__(self, color):
-        self.x = random.randint(0, 750)
-        self.y = random.randint(0, 750)
+        self.x = helper.uniform(0, 750)
+        self.y = helper.uniform(0, 750)
         self.color = color
 
     def draw(self, canvas):
@@ -28,7 +19,7 @@ class Clustering():
         self.canvas.pack()
 
         self.bodies = [Body("grey") for i in xrange(10000)]
-        self.pivots = [Body(generateRandomColor()) for i in xrange(clusters)]
+        self.pivots = [Body(helper.generateRandomColor()) for i in xrange(clusters)]
         self.done = False
         self.start = time.time()
 
