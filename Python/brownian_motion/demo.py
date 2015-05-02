@@ -32,19 +32,14 @@ class Brownian():
         self.canvas.pack()
 
         self.particles = {}
-        # for i in xrange(particles):
-        #     obj = Particle(random.randint(10, 590), random.randint(15, 590))
-        #     self.particles[obj.draw(self.canvas)] = obj
+        for i in xrange(particles):
+            obj = Particle(random.randint(10, 590), random.randint(15, 590))
+            while(True in map(obj.collides, self.particles.values())):
+                obj = Particle(random.randint(10, 590), random.randint(15, 590))
+                obj.dx = random.normalvariate(0, 1)
+                obj.dy = random.normalvariate(0, 1)
 
-        obj1 = Particle(200, 295)
-        obj1.dx, obj1.dy = 1,0
-        obj2 = Particle(400, 305)
-        obj2.dx, obj2.dy = -1,0
-
-        self.particles = {
-            obj1.draw(self.canvas) : obj1,
-            obj2.draw(self.canvas) : obj2
-        }
+            self.particles[obj.draw(self.canvas)] = obj
 
         self.timer()
         root.mainloop()
@@ -54,7 +49,7 @@ class Brownian():
         self.canvas.after(1, self.timer)
 
     def animate(self):
-        # walls
+        # hitting walls
         for key in self.particles.keys():
             particle = self.particles[key]
 
@@ -68,7 +63,7 @@ class Brownian():
             particle.x += particle.dx
             particle.y += particle.dy
 
-        # other particles
+        # hitting other particles
         for p1 in self.particles.keys():
             particle1 = self.particles[p1]
             for p2 in self.particles.keys():
@@ -77,7 +72,7 @@ class Brownian():
                     if(particle1.collides(particle2)):
                         # print p1,
                         particle1.resolveCollision(particle2)
-                        particle1.dy *= -1
+                        particle2.dy *= -1
 
         self.canvas.update()
 
