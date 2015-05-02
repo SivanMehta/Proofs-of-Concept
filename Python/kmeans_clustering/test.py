@@ -4,9 +4,6 @@ root = Tk()
 canvas = Canvas(root, height = 500, width = 500)
 canvas.pack()
 
-
-x_plots = []
-
 def cluster(x, y, points):
     for i in xrange(points):
         plot_x = random.normalvariate(x, 10)
