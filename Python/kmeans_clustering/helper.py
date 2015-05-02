@@ -1,4 +1,4 @@
-import math, random
+import math, random, helper
 import matplotlib.pyplot as plt
 
 def generateRandomColor():
