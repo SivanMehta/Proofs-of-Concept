@@ -9,7 +9,7 @@ class Particle():
         self.dy = random.randint(-3, 3)
 
     def draw(self, canvas):
-        return canvas.create_oval(self.x - 10, self.y - 10, self.x + 10, self.y + 10, fill = "brown", outline = "brown")
+        return canvas.create_oval(self.x - 10, self.y - 10, self.x + 10, self.y + 10, fill = "red", outline = "red")
 
     def collides(self, other):
         # distance between two centers is less than the sum of their radii
@@ -19,7 +19,7 @@ class Particle():
     def resolveCollision(self, other):
         if(other.y == self.y): return
 
-        theta = math.pi - math.atan((other.x - self.x)/(other.y - self.y))
+        theta = math.atan((other.x - self.x)/(other.y - self.y))
         speed = (self.dx**2 + self.dy**2)**.5
         self.dx = speed * math.cos(theta)
         self.dy = speed * math.sin(theta)
@@ -53,10 +53,10 @@ class Brownian():
         for key in self.particles.keys():
             particle = self.particles[key]
 
-            if((particle.dx > 0 and particle.x > 590) or (particle.dx < 0 and particle.x < 10)):
+            if((particle.dx > 0 and particle.x > 575) or (particle.dx < 0 and particle.x < 25)):
                 particle.dx *= -1
 
-            if((particle.dy > 0 and particle.y > 590) or (particle.dy < 0 and particle.y < 15)):
+            if((particle.dy > 0 and particle.y > 575) or (particle.dy < 0 and particle.y < 25)):
                 particle.dy *= -1
 
             self.canvas.move(key, particle.dx, particle.dy)
@@ -70,11 +70,11 @@ class Brownian():
                 particle2 = self.particles[p2]
                 if (p1 != p2):
                     if(particle1.collides(particle2)):
-                        # print p1,
                         particle1.resolveCollision(particle2)
-                        particle2.dy *= -1
+                        particle2.resolveCollision(particle1)
+                        # particle2.dy *= -1
 
         self.canvas.update()
 
 
-Brownian(25)
+Brownian(13)
