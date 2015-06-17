@@ -6,7 +6,7 @@ from Tkinter import *
 root = Tk()
 canvas = Canvas(root, width = 400, height = 400)
 canvas.pack()
-words = "Fuck you "
+words = "How YOU doin"
 
 if(len(words) <= 6):
     fontSize = 100
