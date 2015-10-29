@@ -42,11 +42,11 @@ for val in progressions.values():
 
 errorMessage += "\n###############################################################"
 
-# try:
-iter_time = float(sys.argv[1])
-iterations = int(sys.argv[2])
-func = progressions[sys.argv[3]]
+ try:
+    iter_time = float(sys.argv[1])
+    iterations = int(sys.argv[2])
+    func = progressions[sys.argv[3]]
 
-func(iterations, iter_time)
-# except:
-#     print errorMessage
+    func(iterations, iter_time)
+ except:
+     print errorMessage
