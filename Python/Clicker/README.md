@@ -7,10 +7,10 @@ Simply enter the following to start the game
 python Clicker.py
 ```
 
-Directions
-1. Click on 'Free Cookies to get 1 free cookie'
-2. Use your vast cookie reserves to buy cookie-automating functionality
-3. Rack up as many cookies as you can!
+**Directions**
+* Click on 'Free Cookies to get 1 free cookie'
+* Use your vast cookie reserves to buy cookie-automating functionality
+* Rack up as many cookies as you can!
 
 
 
